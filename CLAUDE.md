@@ -4,7 +4,7 @@ This repo makes talking-head videos of the user with Fish Audio (cloned voice pl
 
 ## First thing in a new session
 
-A session-start hook prints the setup status. If anything is missing, or the user says "set this up", run `python3 scripts/setup.py` and walk them through what it reports, one step at a time (the skill's Setup section has the details). Don't start making a video until the API key, API credit and voice are in place. If the Fish Audio tools (`mcp__fish-audio__*`) aren't available, the user needs to run `/mcp` and sign in, in a Claude Code session opened in this folder.
+A session-start hook prints the setup status. If anything is missing, or the user says "set this up", run `python3 scripts/setup.py` and walk them through what it reports, one step at a time (the skill's Setup section has the details). Don't start making a video until the API key, API credit and voice are in place. If the Fish Audio tools (`mcp__fish-audio__*`) aren't available or say to sign in, the user runs `claude mcp login fish-audio` in a terminal from this folder and signs in in the browser (the desktop app's `/mcp` doesn't list this server).
 
 If you were handed this repo's link in a session somewhere else: clone it, run `python3 scripts/setup.py` inside it, and then ask the user to open Claude Code in the cloned folder to finish. The Fish Audio connection, the skill and these instructions only load there.
 

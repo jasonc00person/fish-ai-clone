@@ -10,7 +10,7 @@ outputs/ folders, registers the Fish Audio MCP with Claude Code, and checks the
 API key, API credit, cloned voice and photo against Fish Audio.
 
 What only you can do: install ffmpeg (it prints the command), sign in to Fish
-Audio (/mcp in Claude Code), and paste an API key into .env.
+Audio (claude mcp login fish-audio), and paste an API key into .env.
 """
 import argparse
 import json
@@ -96,8 +96,9 @@ def check_mcp(online):
         return None
     claude = shutil.which("claude")
     if not claude:
-        return WARN, ("Could not find the claude command to check the Fish Audio MCP from here. In Claude Code, "
-                      "run /mcp: fish-audio should be listed (this folder's .mcp.json registers it). Sign in there.")
+        return WARN, ("Could not find the claude command to check the Fish Audio MCP from here. This folder's "
+                      ".mcp.json registers it; if the Fish Audio tools ask you to sign in, type /mcp in the terminal "
+                      "version of Claude Code, or add https://api.fish.audio/mcp as a custom connector in Claude's settings.")
 
     def status():
         try:
@@ -119,10 +120,11 @@ def check_mcp(online):
     if "Connected" in out:
         return OK, "Fish Audio MCP is connected"
     if "Needs authentication" in out or "Scope:" in out:
-        return TODO, ("Fish Audio MCP is registered but not signed in. In Claude Code run /mcp, pick fish-audio and "
-                      "sign in with your Fish Audio account in the browser (or run: claude mcp login fish-audio). "
-                      "If fish-audio isn't listed, start a new Claude Code session in this folder first.")
-    return TODO, f"Fish Audio MCP is not registered. Run: {MCP_ADD}  then /mcp in Claude Code to sign in."
+        return TODO, ("Fish Audio MCP is registered but not signed in. The user runs this in a terminal, from this "
+                      "folder: claude mcp login fish-audio  (the browser opens; sign in and pick the team). In the "
+                      "terminal version of Claude Code, /mcp then fish-audio also works; the desktop app's /mcp "
+                      "does not list it.")
+    return TODO, f"Fish Audio MCP is not registered. Run: {MCP_ADD}  then: claude mcp login {MCP_NAME}"
 
 
 def check_voice(env, online):

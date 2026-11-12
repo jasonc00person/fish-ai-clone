@@ -21,7 +21,7 @@ Signing up through [this link](https://fish.audio/?fpr=v34eet) gets you 10,000 f
 
 > set this up and set up the Fish Audio MCP
 
-Claude clones the repo, runs the setup check and walks you through the rest. You do three things yourself: sign in to Fish Audio when the browser opens, paste an API key into a file, and (once) open Claude Code inside the new folder.
+Claude clones the repo, runs the setup check and walks you through the rest. You do three things yourself: run one sign-in command (`claude mcp login fish-audio`) and sign in to Fish Audio when the browser opens, paste an API key into a file, and (once) open Claude Code inside the new folder.
 
 **By hand.**
 
@@ -32,9 +32,9 @@ python3 scripts/setup.py
 claude
 ```
 
-`setup.py` creates your `.env`, registers the Fish Audio connection with Claude Code, and tells you exactly what is still missing. Then, inside Claude Code:
+`setup.py` creates your `.env`, registers the Fish Audio connection with Claude Code, and tells you exactly what is still missing. Then:
 
-1. Run `/mcp`, pick `fish-audio`, and sign in with your Fish Audio account.
+1. Sign in to Fish Audio. In a terminal, from this folder, run `claude mcp login fish-audio`. Your browser opens; sign in and pick your team. (In the terminal version of Claude Code, typing `/mcp` and picking `fish-audio` does the same thing. The desktop app's `/mcp` doesn't list it, so use the command.)
 2. Create an API key at [fish.audio/app/api-keys](https://fish.audio/app/api-keys), paste it into `.env` after `FISH_API_KEY=`, and add a few dollars of API credit.
 3. Tell Claude: `set up my voice from <a video file of you talking, or a link to one of your videos>`.
 4. For a photo avatar, put a photo at `me/photo.jpg`: front-facing, mouth closed, looking at the lens. The video keeps the photo's shape, so 16:9 for YouTube and 9:16 for Shorts and Reels.
