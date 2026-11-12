@@ -96,7 +96,7 @@ Two voices from one Drama 3 generation, and cartoon characters that stay the sam
 - `scripts/upload.sh`: uploads files to the slots the Fish Audio MCP hands out
 - `examples/`: the scripts from the video, a faceless narration, and the cartoon skit prompts
 
-Your `.env`, `me/` (voice clips, photo, footage) and `outputs/` never leave your machine. They're gitignored. Your voice is cloned as private, and the scripts never print your voice ID or API key.
+Your `.env`, `me/` (voice clips, photo, footage), `scenes/` (your scripts) and `outputs/` never leave your machine. They're gitignored. Your voice is cloned as private, and the scripts never print your voice ID or API key.
 
 ## What we learned making the video
 

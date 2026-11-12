@@ -126,7 +126,7 @@ Read `reference/skit.md` first. Original characters only: no characters from sho
 
 ## Rules
 
-- `.env`, `me/` and `outputs/` stay local; they're gitignored. Never print the API key. Treat voice IDs like passwords: clones are created private for that reason, and the scripts save them to `.env` without printing them.
+- `.env`, `me/`, `scenes/` and `outputs/` stay local; they're gitignored. Never print the API key. Treat voice IDs like passwords: clones are created private for that reason, and the scripts save them to `.env` without printing them.
 - Only clone the user's own voice, or one they have permission to use. Only put words in the mouth of the user's own face.
 - Every Fish Audio step runs from here, through the scripts or the MCP. Don't send the user to the web app except to sign in, create an API key or add credit.
 - Quote before every paid generation and wait for a yes. A yes covers the quote it answered, nothing else. Pilot one piece before a big batch.

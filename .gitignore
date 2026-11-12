@@ -2,6 +2,7 @@
 CLAUDE.local.md
 me/
 outputs/
+scenes/
 .DS_Store
 .claude/settings.local.json
 __pycache__/

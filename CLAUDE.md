@@ -12,7 +12,7 @@ If you were handed this repo's link in a session somewhere else: clone it, run `
 
 - The Fish Audio MCP (`fish-audio`, registered by `.mcp.json`) handles uploads, quotes, avatar, lip-sync, image and video jobs. The scripts in `scripts/` handle the Drama 3 API with timestamps, voice cloning, transcription, take picking, speaker splits, chunking, captions and assembly. They're standard-library Python plus ffmpeg: no pip installs, and don't add any.
 - `python3 scripts/selftest.py` checks every script offline, with no credits. Run it after changing a script.
-- Secrets and personal media stay local: `.env`, `me/` and `outputs/` are gitignored. Never print the API key, never ask for it in chat, and never put a voice ID in a tracked file.
+- Secrets and personal media stay local: `.env`, `me/`, `scenes/` and `outputs/` are gitignored. Never print the API key, never ask for it in chat, and never put a voice ID in a tracked file.
 - Quote before any paid generation and wait for the user's yes. Voice renders cost fractions of a cent and don't need a quote; face, image and video jobs always do.
 - Only clone the user's own voice and only animate the user's own face, or ones they have permission to use.
 - Write "Fish Audio" with both words capitalized.
