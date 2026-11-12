@@ -5,7 +5,8 @@
     python3 scripts/faceless.py outputs/my-short/narration footage/*.mp4 --out outputs/my-short/final.mp4 [--vertical]
 
 The footage clips play in order, cropped to fill the frame, and loop if the
-narration runs longer. Their own audio is dropped. Use footage you own or have
+narration runs longer. Still images work too (each one holds for --still
+seconds). Their own audio is dropped. Use footage you own or have
 the rights to (your b-roll, stock, or clips you generated with Fish Audio's video
 models). Writes final.mp4 plus final.srt captions from the word timestamps.
 """
@@ -17,9 +18,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from captions import caption_lines, to_srt  # noqa: E402
+from captions import caption_lines, scene_text, to_srt  # noqa: E402
+from common import require_ffmpeg  # noqa: E402
 
 FPS = 30
+STILLS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 def duration(path):
@@ -33,19 +36,27 @@ def main():
     p.add_argument("footage", nargs="+")
     p.add_argument("--out", required=True)
     p.add_argument("--vertical", action="store_true", help="1080x1920 for Shorts and Reels")
+    p.add_argument("--still", type=float, default=4.0, help="seconds each still image stays on screen")
     a = p.parse_args()
+    require_ffmpeg()
+    for f in a.footage:
+        if not Path(f).is_file():
+            sys.exit(f"No such file: {f}")
 
     narr = Path(a.narration_dir)
     total = duration(narr / "audio.wav")
     w, h = (1080, 1920) if a.vertical else (1920, 1080)
 
-    clips = [(f, duration(f)) for f in a.footage]
+    clips = [(f, a.still if Path(f).suffix.lower() in STILLS else duration(f)) for f in a.footage]
     loops = math.ceil(total / sum(d for _, d in clips))
     inputs = [f for _ in range(loops) for f, _ in clips]
 
     args, chain = [], []
     for i, f in enumerate(inputs):
-        args += ["-i", str(f)]
+        if Path(f).suffix.lower() in STILLS:
+            args += ["-loop", "1", "-t", f"{a.still:.3f}", "-i", str(f)]
+        else:
+            args += ["-i", str(f)]
         chain.append(f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},fps={FPS},setsar=1[v{i}]")
     n = len(inputs)
     graph = ";".join(chain) + ";" + "".join(f"[v{i}]" for i in range(n)) + f"concat=n={n}:v=1:a=0[v]"
@@ -56,7 +67,8 @@ def main():
                     "-map", "[v]", "-map", f"{n}:a", "-t", f"{total:.3f}",
                     "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p",
                     "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", str(out)], check=True)
-    out.with_suffix(".srt").write_text(to_srt(caption_lines(json.loads((narr / "words.json").read_text()))))
+    out.with_suffix(".srt").write_text(to_srt(caption_lines(json.loads((narr / "words.json").read_text()),
+                                                            text=scene_text(narr))))
     print(f"{out} ({total:.1f}s, {w}x{h}) + {out.with_suffix('.srt').name}")
 
 

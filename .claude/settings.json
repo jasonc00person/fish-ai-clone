@@ -1,0 +1,35 @@
+{
+  "enabledMcpjsonServers": ["fish-audio"],
+  "permissions": {
+    "allow": [
+      "Bash(python3 scripts/*)",
+      "Bash(bash scripts/upload.sh *)",
+      "Bash(ffprobe *)",
+      "Bash(afplay *)",
+      "mcp__fish-audio__get_credit_balance",
+      "mcp__fish-audio__list_my_workspaces",
+      "mcp__fish-audio__list_media_models",
+      "mcp__fish-audio__get_media_model",
+      "mcp__fish-audio__estimate_*",
+      "mcp__fish-audio__get_generation_status",
+      "mcp__fish-audio__get_generation_result",
+      "mcp__fish-audio__create_media_upload",
+      "mcp__fish-audio__get_upload_url",
+      "mcp__fish-audio__search_voices",
+      "mcp__fish-audio__get_voice"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/setup.py\" --hook"
+          }
+        ]
+      }
+    ]
+  }
+}

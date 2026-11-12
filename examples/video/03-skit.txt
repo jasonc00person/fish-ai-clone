@@ -1,0 +1,9 @@
+<|speaker:0|>[stressed, rushing] Claude, I need a script for tomorrow [defeated] and I've got nothing.
+
+<|speaker:1|>[upbeat, casual] I already pulled three of your best performing videos. [teasing] Want me to write it the way you actually talk?
+
+<|speaker:0|>[skeptical, dry] Last time an AI wrote my script it sounded like a LinkedIn post.
+
+<|speaker:1|>[amused] That's because it was guessing. [confident, quick] I'm not guessing, I'm reading your transcripts.
+
+<|speaker:0|>[long pause] Okay. [impressed, small laugh] That's actually kind of cracked.

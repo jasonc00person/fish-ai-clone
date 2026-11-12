@@ -10,6 +10,11 @@ play in order with jump cuts, and each cut lands on a pause in the new audio
 (audio.wav + words.json from fish_tts.py), so the cuts fall between sentences.
 The clip comes out exactly as long as the audio, since lip sync bills on the
 clip's length, at 1080p with no audio.
+
+Jump cuts show. If you can record (or already have) one continuous take of you
+looking into the lens that is as long as the scene, use that instead: it needs
+no stitching at all (scripts/chunk_scene.py --video take.mp4). This script is
+for when all you have is footage where you only look at the lens now and then.
 """
 import argparse
 import json
@@ -32,6 +37,7 @@ def main():
     p.add_argument("--ranges", required=True, help="lens-facing stretches in the take, e.g. 53.3-57.5,92.0-97.8")
     p.add_argument("--out", required=True)
     p.add_argument("--height", type=int, default=1080)
+    p.add_argument("--loop", action="store_true", help="reuse the ranges from the top if they run out before the audio does")
     a = p.parse_args()
 
     scene = Path(a.scene_dir)
@@ -43,7 +49,10 @@ def main():
     pieces, at, i = [], 0.0, 0
     while at < total - 0.01:
         if i == len(ranges):
-            print("Ranges ran out before the audio did; reusing them from the top.", file=sys.stderr)
+            if not a.loop:
+                have = sum(e - s for s, e in ranges)
+                sys.exit(f"The ranges add up to {have:.1f}s but the audio is {total:.1f}s. Add more lens-facing "
+                         f"stretches, or pass --loop to reuse them from the top (the opening shot will repeat).")
             i = 0
         start, end = ranges[i]
         i += 1

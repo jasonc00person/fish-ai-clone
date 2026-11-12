@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Turn a dialogue scene into a cartoon skit: one shot per line, each lip-synced on its own keyframe.
 
+This is the route where the voices come from Drama 3 (your clone plus a second
+voice, one generation). The other route, where a video model speaks the lines
+itself, needs no split: generate the clips and cut them with scripts/tighten.py.
+
     # 1. One audio clip per line (after fish_tts.py and split_speakers.py on the scene)
     python3 scripts/skit.py split outputs/my-video/02-skit
 
@@ -28,8 +32,14 @@ def run(*args):
     subprocess.run(["ffmpeg", "-y", "-v", "error", *args], check=True)
 
 
+def load_turns(scene):
+    if not (scene / "turns.json").exists():
+        sys.exit(f"No turns.json in {scene}. Run scripts/split_speakers.py on the scene first.")
+    return json.loads((scene / "turns.json").read_text())
+
+
 def split(scene):
-    turns = json.loads((scene / "turns.json").read_text())
+    turns = load_turns(scene)
     (scene / "shots").mkdir(exist_ok=True)
     for i, t in enumerate(turns, 1):
         out = scene / "shots" / f"shot{i:02d}.wav"
@@ -39,7 +49,7 @@ def split(scene):
 
 
 def assemble(scene, out, width, height):
-    turns = json.loads((scene / "turns.json").read_text())
+    turns = load_turns(scene)
     shots = [scene / "shots" / f"shot{i:02d}.mp4" for i in range(1, len(turns) + 1)]
     missing = [s.name for s in shots if not s.exists()]
     if missing:
@@ -54,10 +64,14 @@ def assemble(scene, out, width, height):
         chain += (f"[{k}:v]scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},"
                   f"setsar=1,fps={FPS},tpad=stop_mode=clone:stop_duration=1,trim=end_frame={frames},setpts=PTS-STARTPTS[v{k}];")
     graph = chain + "".join(f"[v{k}]" for k in range(len(shots))) + f"concat=n={len(shots)}:v=1:a=0[v]"
-    run(*args, "-i", str(scene / "audio.wav"), "-filter_complex", graph, "-map", "[v]", "-map", f"{len(shots)}:a",
-        "-c:v", "libx264", "-crf", "16", "-preset", "medium", "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-shortest", "-movflags", "+faststart", str(out))
-    print(f"{out}: {len(shots)} shots")
+    # Cut to the audio's exact length (never -shortest: it can drop the last few frames).
+    total = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                                  str(scene / "audio.wav")], capture_output=True, text=True, check=True).stdout)
+    graph += f";[{len(shots)}:a]apad[a]"
+    run(*args, "-i", str(scene / "audio.wav"), "-filter_complex", graph, "-map", "[v]", "-map", "[a]",
+        "-t", f"{total:.3f}", "-c:v", "libx264", "-crf", "16", "-preset", "medium", "-pix_fmt", "yuv420p",
+        "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-movflags", "+faststart", str(out))
+    print(f"{out}: {len(shots)} shots, {total:.1f}s")
 
 
 def main():

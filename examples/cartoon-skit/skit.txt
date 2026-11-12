@@ -1,0 +1,19 @@
+<|speaker:0|>[tired, mumbling] I haven't posted in nine days. I have zero ideas. I'm cooked.
+
+<|speaker:1|>[calm, a little smug] I already wrote you three scripts.
+
+<|speaker:0|>[suspicious] Last time an AI wrote my script, it sounded like a LinkedIn post.
+
+<|speaker:1|>[dry] I read your transcripts. You said "like" seventy times in one video.
+
+<|speaker:0|>[defensive] Bro, I don't, like... [beat] Okay. That's fair.
+
+<|speaker:1|>[casually] I also made the video.
+
+<|speaker:0|>[amused] You can't make the video. You don't even have my voice.
+
+<|speaker:2|>[hyped, YouTube intro voice] What's up everyone! I'm humbled to announce I'm quitting YouTube and going all in on LinkedIn. [beat] Let me know in the comments what you think.
+
+<|speaker:0|>[alarmed] Bro, what? You can't post that.
+
+<|speaker:1|>[cheerful] Already posted it. [beat] It's doing better than your last video.
